@@ -50,7 +50,16 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col bg-zinc-900 text-white" style={{ height: "100svh" }}>
+    <div
+      className="flex flex-col text-white"
+      style={{
+        height: "100svh",
+        backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')",
+        backgroundColor: "#0b0e1a", // deep space tone behind texture
+        backgroundSize: "cover",
+        backgroundRepeat: "repeat",
+      }}
+    >
       {/* Header */}
       <div className="bg-zinc-800 p-4 text-center text-lg font-semibold border-b border-zinc-700">
         Triffnix.AI
