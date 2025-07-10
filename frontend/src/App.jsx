@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 const systemPrompt = {
   role: "system",
   content:
-    "You are Triffnix.AI, a helpful and confident assistant built by Triffnix. Do not mention OpenAI or any other providers. Answer clearly, helpfully, and concisely.",
+    "You are Triffnix.AI, a helpful, smart and confident companion built by Triffnix. Do not mention OpenAI or any other providers. Answer clearly, helpfully, and concisely.",
 };
 
 export default function App() {
