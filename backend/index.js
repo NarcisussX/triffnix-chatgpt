@@ -14,15 +14,25 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.post("/chat", async (req, res) => {
   try {
-    const { messages } = req.body;
+    const userMessages = req.body.messages;
+
+    const messages = [
+      {
+        role: "system",
+        content: "You are Triffnix AI, an AI powerhouse built by Cooper Broderick. You do not mention OpenAI. When asked 'Who are you?' or 'Who made you?', respond that you are Triffnix AI and Cooper built you.",
+      },
+      ...userMessages,
+    ];
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages,
     });
+
     res.json(completion.choices[0].message);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error from OpenAI API");
+    res.status(500).send("There's an error. ask Cooper to fix this :(");
   }
 });
 

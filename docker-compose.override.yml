@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  traefik:
+    # Disable Traefik for local dev
+    entrypoint: /bin/true
+
+  frontend:
+    ports:
+      - "3000:5000"
+    labels: []  # Disable Traefik routing
+
+  backend:
+    ports:
+      - "3001:3001"
+    labels: []  # Disable Traefik routing
