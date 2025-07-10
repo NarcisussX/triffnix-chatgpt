@@ -1,24 +1,33 @@
-version: '3.8'
+version: "3.9"
 
 services:
-traefik:
-  image: traefik:v2.11
-  command:
-    - --entrypoints.web.address=:80
-    - --entrypoints.websecure.address=:443
-    - --providers.docker=true
-    - --api.dashboard=true
-    - --certificatesresolvers.lets-encrypt.acme.tlschallenge=true
-    - --certificatesresolvers.lets-encrypt.acme.email=you@triffnix.com
-    - --certificatesresolvers.lets-encrypt.acme.storage=/letsencrypt/acme.json
-    - --log.level=DEBUG
-  ports:
-    - "80:80"
-    - "443:443"
-    - "8080:8080" # Optional dashboard port
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock:ro
-    - ./letsencrypt:/letsencrypt
+  traefik:
+    image: traefik:v2.11
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --providers.docker=true
+      - --api.dashboard=true
+      - --certificatesresolvers.lets-encrypt.acme.tlschallenge=true
+      - --certificatesresolvers.lets-encrypt.acme.email=you@triffnix.com
+      - --certificatesresolvers.lets-encrypt.acme.storage=/letsencrypt/acme.json
+      - --log.level=DEBUG
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # Optional dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+
+  # Add your other services here:
+  frontend:
+    build: ./frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`triffnix.com`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=lets-encrypt"
 
   backend:
     build: ./backend
@@ -26,18 +35,4 @@ traefik:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`api.triffnix.com`)"
       - "traefik.http.routers.backend.entrypoints=websecure"
-      - "traefik.http.services.backend.loadbalancer.server.port=3001"
-      - "traefik.http.routers.backend.tls.certresolver=le"
-    env_file:
-      - .env
-
-  frontend:
-    build: ./frontend
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`chat.triffnix.com`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.services.frontend.loadbalancer.server.port=5000"
-      - "traefik.http.routers.frontend.tls.certresolver=le"
-    depends_on:
-      - backend
+      - "traefik.http.routers.backend.tls.certresolver=lets-encrypt"
