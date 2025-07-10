@@ -1,28 +1,24 @@
 version: '3.8'
 
 services:
-  traefik:
-    image: traefik:v3.0
-    command:
-      - --api.dashboard=true
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --providers.docker=true
-      - --certificatesresolvers.le.acme.tlschallenge=true
-      - --certificatesresolvers.le.acme.email=you@triffnix.com
-      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik/acme.json:/letsencrypt/acme.json
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.triffnix.com`)"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.tls.certresolver=le"
+traefik:
+  image: traefik:v2.11
+  command:
+    - --entrypoints.web.address=:80
+    - --entrypoints.websecure.address=:443
+    - --providers.docker=true
+    - --api.dashboard=true
+    - --certificatesresolvers.lets-encrypt.acme.tlschallenge=true
+    - --certificatesresolvers.lets-encrypt.acme.email=you@triffnix.com
+    - --certificatesresolvers.lets-encrypt.acme.storage=/letsencrypt/acme.json
+    - --log.level=DEBUG
+  ports:
+    - "80:80"
+    - "443:443"
+    - "8080:8080" # Optional dashboard port
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ./letsencrypt:/letsencrypt
 
   backend:
     build: ./backend
