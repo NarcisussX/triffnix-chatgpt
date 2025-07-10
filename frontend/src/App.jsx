@@ -12,7 +12,6 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom on new message
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -23,7 +22,7 @@ export default function App() {
     if (!input.trim()) return;
 
     const userMessage = { role: "user", content: input };
-    const newMessages = [...messages, userMessage].slice(-4); // limit to last 4 messages
+    const newMessages = [...messages, userMessage].slice(-4);
     setMessages(newMessages);
     setInput("");
     setLoading(true);
@@ -38,28 +37,37 @@ export default function App() {
       });
 
       const data = await res.json();
-      setMessages(prev => [...prev, { role: "assistant", content: data.reply }].slice(-4));
+      setMessages((prev) =>
+        [...prev, { role: "assistant", content: data.reply }].slice(-4)
+      );
     } catch (err) {
-      setMessages(prev => [...prev, { role: "assistant", content: "Sorry — something went wrong." }].slice(-4));
+      setMessages((prev) =>
+        [...prev, { role: "assistant", content: "Sorry — something went wrong." }].slice(-4)
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col bg-zinc-900 text-white" style={{ height: '100svh' }}>
-
-      {/* 💡 Badge */}
-      <div className="bg-zinc-800 px-4 py-2 text-xs text-zinc-400 italic shadow">
-        💡 <span className="italic">Triffnix.AI remembers your last 4 messages</span>
+    <div className="flex flex-col bg-zinc-900 text-white" style={{ height: "100svh" }}>
+      {/* Header */}
+      <div className="bg-zinc-800 p-4 text-center text-lg font-semibold border-b border-zinc-700">
+        Triffnix.AI
       </div>
 
-      {/* Message Area */}
+      {/* Message area */}
       <div className="flex-1 overflow-y-auto px-4 py-2 space-y-2">
+        {/* 💡 Info Badge */}
+        <div className="text-xs text-zinc-400 italic mb-2">
+          💡 <span className="italic">Triffnix.AI remembers your last 4 messages</span>
+        </div>
+
+        {/* Messages */}
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`max-w-[80%] px-4 py-2 rounded-lg text-sm ${
+            className={`max-w-[80%] px-4 py-2 rounded-lg text-sm whitespace-pre-wrap ${
               msg.role === "user"
                 ? "bg-blue-600 self-end ml-auto"
                 : "bg-zinc-700 self-start mr-auto"
@@ -69,21 +77,23 @@ export default function App() {
           </div>
         ))}
 
-        {/* Typing Indicator */}
+        {/* Typing */}
         {loading && (
-          <div className="text-sm italic text-zinc-400">Triffnix.AI is typing…</div>
+          <div className="bg-zinc-700 self-start mr-auto px-4 py-2 rounded-lg text-sm text-zinc-300 animate-pulse">
+            Triffnix.AI is typing...
+          </div>
         )}
 
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Bar */}
+      {/* Input */}
       <div className="p-2 bg-zinc-800 flex border-t border-zinc-700">
         <input
           type="text"
           value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && sendMessage()}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           className="flex-1 p-2 rounded-l-md bg-zinc-900 border border-zinc-700 text-white"
           placeholder="Type a message..."
         />
