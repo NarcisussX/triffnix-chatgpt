@@ -29,7 +29,7 @@ app.post("/chat", async (req, res) => {
       messages,
     });
 
-    res.json(completion.choices[0].message);
+    res.json({ reply: completion.choices[0].message.content.trim() });
   } catch (err) {
     console.error(err);
     res.status(500).send("There's an error. ask Cooper to fix this :(");
