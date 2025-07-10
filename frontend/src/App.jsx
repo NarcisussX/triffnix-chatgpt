@@ -47,7 +47,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-zinc-900 text-white">
+    <div className="fixed inset-0 flex flex-col bg-zinc-900 text-white">
       {/* 💡 Badge */}
       <div className="bg-zinc-800 px-4 py-2 text-xs text-zinc-400 italic shadow">
         💡 <span className="italic">Triffnix.AI remembers your last 4 messages</span>
