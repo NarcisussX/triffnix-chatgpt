@@ -31,6 +31,8 @@ services:
 
   backend:
     build: ./backend
+    env_file:
+      - .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`api.triffnix.com`)"
